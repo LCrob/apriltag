@@ -39,6 +39,7 @@ either expressed or implied, of the Regents of The University of Michigan.
 #include <stdio.h>
 #include <inttypes.h>
 
+
 #include "common/image_u8.h"
 #include "common/image_u8x3.h"
 #include "common/zhash.h"
@@ -416,6 +417,7 @@ struct evaluate_quad_ret
 };
 
 static matd_t* homography_compute2(double c[4][4]) {
+    
     double A[] =  {
             c[0][0], c[0][1], 1,       0,       0, 0, -c[0][0]*c[0][2], -c[0][1]*c[0][2], c[0][2],
                   0,       0, 0, c[0][0], c[0][1], 1, -c[0][0]*c[0][3], -c[0][1]*c[0][3], c[0][3],
@@ -429,6 +431,7 @@ static matd_t* homography_compute2(double c[4][4]) {
 
     double epsilon = 1e-10;
 
+
     // Eliminate.
     for (int col = 0; col < 8; col++) {
         // Find best row to swap with.
@@ -436,6 +439,7 @@ static matd_t* homography_compute2(double c[4][4]) {
         int max_val_idx = -1;
         for (int row = col; row < 8; row++) {
             double val = fabs(A[row*9 + col]);
+            //printf("%d \n", row*9 + col)
             if (val > max_val) {
                 max_val = val;
                 max_val_idx = row;
@@ -473,6 +477,14 @@ static matd_t* homography_compute2(double c[4][4]) {
         }
         A[col*9 + 8] = (A[col*9 + 8] - sum)/A[col*9 + col];
     }
+
+
+    //debug
+    //printf("####\n####\n####\n####\n####\n####\n####\n");
+    //printf(" %f %f %f \n",A[8], A[17], A[26] );
+    //printf("%f %f %f \n", A[35], A[44], A[53]);
+    //printf(" %f %f 1" , A[62], A[71] );
+
     return matd_create_data(3, 3, (double[]) { A[8], A[17], A[26], A[35], A[44], A[53], A[62], A[71], 1 });
 }
 
@@ -497,6 +509,11 @@ static int quad_update_homographies(struct quad *quad)
 
     // XXX Tunable
     quad->H = homography_compute2(corr_arr);
+
+
+    // DEBUG (print values)
+    //matd_t* myPose = homography_to_pose(quad->H , 600, 600 , 0, 0 );
+    
 
     quad->Hinv = matd_inverse(quad->H);
 
@@ -988,6 +1005,10 @@ static int prefer_smaller(int pref, double q0, double q1)
     return 0;
 }
 
+
+/*
+* return an array of detections
+*/
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 {
     if (zarray_size(td->tag_families) == 0) {
@@ -996,6 +1017,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         return s;
     }
 
+    /*      wp (workpool, for multithreadig)     */
     if (td->wp == NULL || td->nthreads != workerpool_get_nthreads(td->wp)) {
         workerpool_destroy(td->wp);
         td->wp = workerpool_create(td->nthreads);
@@ -1014,6 +1036,8 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         timeprofile_stamp(td->tp, "decimate");
     }
 
+
+    /* for image decimation and blurring */
     if (td->quad_sigma != 0) {
         // compute a reasonable kernel width by figuring that the
         // kernel should go out 2 std devs.
@@ -1059,10 +1083,16 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
     }
 
+
+
+
     timeprofile_stamp(td->tp, "blur/sharp");
 
     if (td->debug)
         image_u8_write_pnm(quad_im, "debug_preprocess.pnm");
+
+
+
 
     zarray_t *quads = apriltag_quad_thresh(td, quad_im);
 
@@ -1082,17 +1112,32 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
                     q->p[j][1] = (q->p[j][1] - 0.5)*td->quad_decimate + 0.5;
                 }
             }
+
         }
-    }
+       }
 
     if (quad_im != im_orig)
         image_u8_destroy(quad_im);
 
+
+    /*    That is the array we will return from this function     */
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
 
     td->nquads = zarray_size(quads);
-
+        
     timeprofile_stamp(td->tp, "quads");
+
+
+    if(zarray_size(quads) != 0){
+        for(int i = 0; i < zarray_size(quads); ++i)
+        {
+            
+            struct quad *quad;
+            zarray_get_volatile(quads, i, &quad);
+
+        }
+    }
+
 
     if (td->debug) {
         image_u8_t *im_quads = image_u8_copy(im_orig);
@@ -1194,13 +1239,23 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
             for (int k = 0; k < 4; k++)
                 zarray_set(poly0, k, det0->p[k], NULL);
 
+
+           
+
+
+
+
             for (int i1 = i0+1; i1 < zarray_size(detections); i1++) {
 
                 apriltag_detection_t *det1;
                 zarray_get(detections, i1, &det1);
 
                 if (det0->id != det1->id || det0->family != det1->family)
+                {
+
                     continue;
+                }
+                    
 
                 for (int k = 0; k < 4; k++)
                     zarray_set(poly1, k, det1->p[k], NULL);
@@ -1222,6 +1277,13 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
                     if (pref == 0) {
                         // at this point, we should only be undecided if the tag detections
                         // are *exactly* the same. How would that happen?
+                          //here
+                        matd_t* myH = homography_compute2(det1->H);
+                        matd_t* myPose = homography_to_pose(myH, 10,10,0,0);
+                        for(int i = 0; i < 9 ; i++ )
+                        {
+                            printf("%f" , myPose[i]);
+                        }
                         printf("uh oh, no preference for overlappingdetection\n");
                     }
 
@@ -1230,12 +1292,21 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
                         apriltag_detection_destroy(det1);
                         zarray_remove_index(detections, i1, 1);
                         i1--; // retry the same index
+                        
+                      
                         goto retry1;
                     } else {
                         // keep det1, destroy det0
                         apriltag_detection_destroy(det0);
                         zarray_remove_index(detections, i0, 1);
-                        i0--; // retry the same index.
+                        i0--; // retry the same index. 
+                        //here
+                        matd_t* myH = homography_compute2(det0->H);
+                        matd_t* myPose = homography_to_pose(myH, 10,10,0,0);
+                        for(int i = 0; i < 9 ; i++ )
+                        {
+                            printf("%f" , myPose[i]);
+                        }
                         goto retry0;
                     }
                 }
@@ -1246,12 +1317,17 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
           retry0: ;
         }
 
+
+
+
         zarray_destroy(poly0);
         zarray_destroy(poly1);
     }
 
     timeprofile_stamp(td->tp, "reconcile");
 
+
+   
     ////////////////////////////////////////////////////////////////
     // Produce final debug output
     if (td->debug) {
@@ -1294,6 +1370,10 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         fprintf(f, "showpage\n");
         fclose(f);
     }
+
+
+
+
 
     if (td->debug) {
         image_u8_t *darker = image_u8_copy(im_orig);
@@ -1379,7 +1459,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
     }
 
     timeprofile_stamp(td->tp, "debug output");
-
+    
     for (int i = 0; i < zarray_size(quads); i++) {
         struct quad *quad;
         zarray_get_volatile(quads, i, &quad);
@@ -1391,6 +1471,10 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
     zarray_sort(detections, detection_compare_function);
     timeprofile_stamp(td->tp, "cleanup");
+
+
+
+
 
     return detections;
 }

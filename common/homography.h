@@ -166,6 +166,7 @@ static inline void homography_project(const matd_t *H, double x, double y, doubl
 // R20 = H20
 // R21 = H21
 // TZ  = H22
+
 matd_t *homography_to_pose(const matd_t *H, double fx, double fy, double cx, double cy);
 
 // Similar to above

@@ -15,6 +15,9 @@ endif()
 
 find_package(OpenCV QUIET)
 
+find_package(Eigen3 REQUIRED)
+
+include_directories(${EIGEN3_INCLUDE_DIR})
 aux_source_directory(common COMMON_SRC)
 set(APRILTAG_SRCS apriltag.c apriltag_pose.c apriltag_quad_thresh.c)
 
@@ -143,13 +146,32 @@ endif (NOT Python3_NOT_FOUND AND NOT Numpy_NOT_FOUND AND PYTHONLIBS_FOUND AND BU
 add_executable(apriltag_demo example/apriltag_demo.c)
 target_link_libraries(apriltag_demo apriltag)
 
+include_directories(zmq_layer/)########added##########
+
+add_executable(opencv_demo example/opencv_demo.cc
+                zmq_layer/Publisher.hpp
+                zmq_layer/Subscriber.hpp
+                zmq_layer/zmq.hpp
+                json.hpp
+                zmq_layer/zhelpers.hpp
+                zmq_layer/Publisher.cpp
+                zmq_layer/Subscriber.cpp
+                markerPoseData.hpp
+		single_thread.hpp
+		mathUtils.cpp )
+
 # opencv_demo
 if(OpenCV_FOUND)
-    add_executable(opencv_demo example/opencv_demo.cc)
-    target_link_libraries(opencv_demo apriltag ${OpenCV_LIBRARIES})
+
+    target_link_libraries(opencv_demo apriltag zmq pthread ${OpenCV_LIBRARIES})
+	#target_link_libraries(opencv_demo zmq pthread)######added#######
+
+    set(CMAKE_HEADER_FILE zmq_layer/*) ####added######
+
     set_target_properties(opencv_demo PROPERTIES CXX_STANDARD 11)
     install(TARGETS opencv_demo RUNTIME DESTINATION bin)
-endif(OpenCV_FOUND)
+
+    endif(OpenCV_FOUND)
 
 # install example programs
 install(TARGETS apriltag_demo RUNTIME DESTINATION bin)

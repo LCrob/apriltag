@@ -1,0 +1,10 @@
+/home/luigi/projects/apriltag/CMakeFiles/list_install_components.dir
+/home/luigi/projects/apriltag/CMakeFiles/install/local.dir
+/home/luigi/projects/apriltag/CMakeFiles/apriltag_python.dir
+/home/luigi/projects/apriltag/CMakeFiles/apriltag.dir
+/home/luigi/projects/apriltag/CMakeFiles/install.dir
+/home/luigi/projects/apriltag/CMakeFiles/apriltag_demo.dir
+/home/luigi/projects/apriltag/CMakeFiles/edit_cache.dir
+/home/luigi/projects/apriltag/CMakeFiles/install/strip.dir
+/home/luigi/projects/apriltag/CMakeFiles/opencv_demo.dir
+/home/luigi/projects/apriltag/CMakeFiles/rebuild_cache.dir

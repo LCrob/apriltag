@@ -25,9 +25,24 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the Regents of The University of Michigan.
 */
 
+
+
+//./opencv_demo -f tag36h11 -p tcp://192.168.204.140:7500
+
+
 #include <iostream>
 
 #include "opencv2/opencv.hpp"
+#include <fstream>
+#include <json.hpp>
+#include <Publisher.hpp>
+#include <signal.h>
+#include <getopt.h>
+#include <thread>
+#include <markerPoseData.hpp>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <mathUtils.h>
 
 extern "C" {
 #include "apriltag.h"
@@ -40,14 +55,117 @@ extern "C" {
 #include "tagStandard41h12.h"
 #include "tagStandard52h13.h"
 #include "common/getopt.h"
+#include "common/homography.h"
+#include "apriltag_pose.h"
 }
 
 using namespace std;
 using namespace cv;
 
+Common::Publisher* aprilcodePublisher; //("tcp://*:8500");
+
+std::string publisherAddress;
+std::string fam;
+bool publisherAddress_specified;
+
+bool ctrl_c_pressed;
+void ctrlc(int)
+{
+    ctrl_c_pressed = true;
+}
+
+//from rotation To Quaternion
+
+/*
+void fromRotationToQuaternion( Eigen::Quaternion<float>& q , apriltag_pose_t& a ) {
+
+
+    Eigen::Vector3f traceVec;
+    traceVec <<a.R->data[0] , a.R->data[4] , a.R->data[8];
+
+    if( traceVec.sum() > 0 ) {
+        double s = 0.5f / sqrtf(traceVec.sum()+ 1.0f);
+        q.w() = 0.25f / s;
+        q.x() = ( a.R->data[7] - a.R->data[5] ) * s;
+        q.y() = ( a.R->data[2] - a.R->data[6] ) * s;
+        q.z() = ( a.R->data[3] - a.R->data[1] ) * s;
+    }
+    else {
+        if ( a.R->data[0] > a.R->data[4] && a.R->data[0] > a.R->data[8] ) {
+            double s = 2.0f * sqrtf( 1.0f + a.R->data[0] - a.R->data[4] - a.R->data[8]);
+            q.w() = (a.R->data[7] - a.R->data[5] ) / s;
+            q.x() = 0.25f * s;
+            q.y() = (a.R->data[1] + a.R->data[3] ) / s;
+            q.z() = (a.R->data[2] + a.R->data[6] ) / s;
+        }
+        else if (a.R->data[4] > a.R->data[8]) {
+            double s = 2.0f * sqrtf( 1.0f + a.R->data[4] - a.R->data[0] - a.R->data[8]);
+            q.w() = (a.R->data[2] - a.R->data[6] ) / s;
+            q.x() = (a.R->data[1] + a.R->data[3] ) / s;
+            q.y() = 0.25f * s;
+            q.z() = (a.R->data[5] + a.R->data[7] ) / s;
+        } else {
+            double s = 2.0f * sqrtf( 1.0f + a.R->data[8] - a.R->data[0] - a.R->data[4] );
+            q.w() = (a.R->data[3] - a.R->data[1] ) / s;
+            q.x() = (a.R->data[2] + a.R->data[6] ) / s;
+            q.y() = (a.R->data[5] + a.R->data[7] ) / s;
+            q.z() = 0.25f * s;
+        }
+    }
+
+    //std::cout<<std::setprecision(4) <<" W = " << q.w() <<" , X = " << q.x() <<" , Y = " << q.y() <<" , Z = " << q.z()  << std::endl;
+}
+
+
+void fromQuaternionToRPY(float& roll,float& pitch,float& yaw,Eigen::Quaternion<float>& q) {
+    double sqw = q.w()*q.w();
+    double sqx = q.x()*q.x();
+    double sqy = q.y()*q.y();
+    double sqz = q.z()*q.z();
+    double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
+    double test = q.x()*q.y() + q.z()*q.w();
+    //if (test > 0.499*unit) { // singularity at north pole
+        if (test > 0.400*unit) { // singularity at north pole
+            pitch = 2 * atan2(q.x(),q.w());
+            yaw = M_PI/2;
+            roll = 0;
+        return;
+    }
+    //if (test < -0.499*unit) { // singularity at south pole
+    if (test < -0.400*unit) {
+        pitch = -2 * atan2(q.x() ,q.w());
+        yaw = -M_PI/2;
+        roll = 0;
+        return;
+    }
+
+    pitch = atan2(2*q.y()*q.w()-2*q.x()*q.z() , sqx - sqy - sqz + sqw);
+    yaw = asin(2*test/unit);
+    roll = atan2(2*q.x()*q.w()-2*q.y()*q.z() , -sqx + sqy - sqz + sqw);
+
+}
+
+*/
+
+bool checkInBoundaries(double p[][2])
+{
+    
+    for(size_t i = 0 ; i < 4 ; i++)
+    {
+        if(    ( p[i][1] > 20 && p[i][1] < 470 )        &&  ( p[i][0] >20  && p[i][0] < 630  )   )
+            continue;
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+};
 
 int main(int argc, char *argv[])
 {
+
+    /*inizio opzioni apriltag Detector*/
     getopt_t *getopt = getopt_create();
 
     getopt_add_bool(getopt, 'h', "help", 0, "Show this help");
@@ -58,9 +176,10 @@ int main(int argc, char *argv[])
     getopt_add_double(getopt, 'x', "decimate", "2.0", "Decimate input image by this factor");
     getopt_add_double(getopt, 'b', "blur", "0.0", "Apply low-pass blur to input");
     getopt_add_bool(getopt, '0', "refine-edges", 1, "Spend more time trying to align edges of tags");
+    getopt_add_string(getopt, 'p', "pubAddr", "ppubAddr", "pubAddr");
 
     if (!getopt_parse(getopt, argc, argv, 1) ||
-            getopt_get_bool(getopt, "help")) {
+        getopt_get_bool(getopt, "help")) {
         printf("Usage: %s [options]\n", argv[0]);
         getopt_do_usage(getopt);
         exit(0);
@@ -75,26 +194,30 @@ int main(int argc, char *argv[])
 
     // Initialize tag detector with options
     apriltag_family_t *tf = NULL;
+    publisherAddress = getopt_get_string(getopt, "pubAddr");
     const char *famname = getopt_get_string(getopt, "family");
+
+    //    const char *famname = fam.c_str();
     if (!strcmp(famname, "tag36h11")) {
         tf = tag36h11_create();
-    } else if (!strcmp(famname, "tag25h9")) {
-        tf = tag25h9_create();
-    } else if (!strcmp(famname, "tag16h5")) {
-        tf = tag16h5_create();
-    } else if (!strcmp(famname, "tagCircle21h7")) {
-        tf = tagCircle21h7_create();
-    } else if (!strcmp(famname, "tagCircle49h12")) {
-        tf = tagCircle49h12_create();
-    } else if (!strcmp(famname, "tagStandard41h12")) {
-        tf = tagStandard41h12_create();
-    } else if (!strcmp(famname, "tagStandard52h13")) {
-        tf = tagStandard52h13_create();
-    } else if (!strcmp(famname, "tagCustom48h12")) {
-        tf = tagCustom48h12_create();
-    } else {
-        printf("Unrecognized tag family name. Use e.g. \"tag36h11\".\n");
-        exit(-1);
+        } else if (!strcmp(famname, "tag25h9")) {
+            tf = tag25h9_create();
+        } else if (!strcmp(famname, "tag16h5")) {
+            tf = tag16h5_create();
+        } else if (!strcmp(famname, "tagCircle21h7")) {
+            tf = tagCircle21h7_create();
+        } else if (!strcmp(famname, "tagCircle49h12")) {
+            tf = tagCircle49h12_create();
+        } else if (!strcmp(famname, "tagStandard41h12")) {
+            tf = tagStandard41h12_create();
+        } else if (!strcmp(famname, "tagStandard52h13")) {
+            tf = tagStandard52h13_create();
+        } else if (!strcmp(famname, "tagCustom48h12")) {
+            tf = tagCustom48h12_create();
+        }
+        else {
+            printf("Unrecognized tag family name. Use e.g. \"tag36h11\".\n");
+            exit(-1);
     }
 
 
@@ -106,8 +229,13 @@ int main(int argc, char *argv[])
     td->debug = getopt_get_bool(getopt, "debug");
     td->refine_edges = getopt_get_bool(getopt, "refine-edges");
 
+
+    aprilcodePublisher = new Common::Publisher(publisherAddress);
+    std::string out;
+
     Mat frame, gray;
     while (true) {
+
         cap >> frame;
         cvtColor(frame, gray, COLOR_BGR2GRAY);
 
@@ -120,10 +248,34 @@ int main(int argc, char *argv[])
 
         zarray_t *detections = apriltag_detector_detect(td, &im);
 
-        // Draw detection outlines
+        //detections->size tells how many apriltag are detected in the image
+        //cout<<"Size if zarray (zarray->size) " << detections->size << endl;
+
+        // Draw detection outlines            
+        apriltag_pose_t pose;
+
+
+
         for (int i = 0; i < zarray_size(detections); i++) {
+
+            Eigen::Quaternion<float> q;
+
             apriltag_detection_t *det;
+
             zarray_get(detections, i, &det);
+
+            apriltag_detection_info_t info;
+            info.det = det;
+            info.tagsize = 0.054;
+            info.fx = 632.74999736;//683.75954508;//661.25;
+            info.fy = 633.5834324;//687.37260599;//667.81;
+            info.cx = 312.43271146;//264.12598696;//299.04; 
+            info.cy = 229.88570203;//237.96954446;//250.50;
+            estimate_tag_pose( &info,  &pose);
+
+            //estimate_pose_for_tag_homography( &info,  &pose);
+
+
             line(frame, Point(det->p[0][0], det->p[0][1]),
                      Point(det->p[1][0], det->p[1][1]),
                      Scalar(0, 0xff, 0), 2);
@@ -137,6 +289,11 @@ int main(int argc, char *argv[])
                      Point(det->p[3][0], det->p[3][1]),
                      Scalar(0xff, 0, 0), 2);
 
+            bool in_bound = checkInBoundaries(det->p);
+            if(!in_bound)
+            {
+                continue;
+            }
             stringstream ss;
             ss << det->id;
             String text = ss.str();
@@ -147,13 +304,70 @@ int main(int argc, char *argv[])
                                             &baseline);
             putText(frame, text, Point(det->c[0]-textsize.width/2,
                                        det->c[1]+textsize.height/2),
-                    fontface, fontscale, Scalar(0xff, 0x99, 0), 2);
+                                        fontface, fontscale, Scalar(0xff, 0x99, 0), 2);
+
+
+            //float yaw   = atan2(pose.R->data[3], pose.R->data[0]  );
+            //float pitch = atan2( -pose.R->data[6]  , sqrt( pow(pose.R->data[7],2) + pow(pose.R->data[8],2)) );
+            //float roll  = atan2(pose.R->data[7] , pose.R->data[8] );
+            float x = pose.t->data[0] ;
+            float y = pose.t->data[1] ;
+            float z = pose.t->data[2] ;
+            float roll,pitch,yaw;
+            //fromRotationToQuaternion(q, pose);
+            //fromQuaternionToRPY(roll, pitch, yaw,  q) ;
+            
+            Eigen::Matrix3f R;
+            R << pose.R->data[0] ,pose.R->data[1]  ,pose.R->data[2],
+                pose.R->data[3] ,pose.R->data[4] ,pose.R->data[5],
+                pose.R->data[6] ,pose.R->data[7], pose.R->data[8]; 
+            
+            fromRotationToRPYAngle(roll,pitch,yaw,R);
+            
+            //std::cout<< setprecision(4) << pose.R->data[0] << " "<< pose.R->data[1] << " "<< pose.R->data[2] << " "<< pose.R->data[3] << " "<< pose.R->data[4] << " " << std::endl;
+
+            //std::cout<< setprecision(4) << "roll = " << roll*180.0/3.14 <<  "pitch = " << pitch*180.0/3.14 << "yaw = " << yaw*180.0/3.14 << std::endl;
+            //std::cout<< setprecision(4) << "x = " << x <<  "y = " << y << "z = " << z << std::endl;
+            nlohmann::json j;
+            j["id"] = det->id;
+
+            markerPoseData marker;
+            marker.x = x;
+            marker.y = y;
+            marker.z = z;
+            marker.roll = roll;
+            marker.pitch = pitch;
+            marker.yaw = yaw;
+            marker.to_json(j);
+            std::string  tmp_string = j.dump();
+            const char* out_cstring = tmp_string.c_str();
+            
+            aprilcodePublisher->send("MARKER", out_cstring, strlen(out_cstring) );
+            if (ctrl_c_pressed){
+
+                std::cout << std::endl << "---------------------------------------------------------" << std::endl;
+                std::cout <<              "-                   STOP REQUESTED                      -";
+                std::cout << std::endl << "---------------------------------------------------------" << std::endl <<std::endl;
+
+                break;
+            }
+
+
         }
+
+        
+
+        imshow("immagine" , frame);
+        waitKey(10);
         apriltag_detections_destroy(detections);
 
-        imshow("Tag Detections", frame);
-        if (waitKey(30) >= 0)
-            break;
+
+        //float yaw   = atan2(pose.R->data[1], pose.R->data[0]  );//  atan2(R(2,1),R(1,1));
+        //float pitch = atan2( pose.R->data[2]  , sqrt( pow(pose.R->data[5],2) + pow(pose.R->data[8],2)) );  //atan2(-R(3,1),sqrt(R(3,2)^2+R(3,3)^2)));
+        //float roll  = atan2(pose.R->data[5] , pose.R->data[8] ); //atan2(R(3,2),R(3,3));
+
+            //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+       //    }
     }
 
     apriltag_detector_destroy(td);
@@ -181,3 +395,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+
+

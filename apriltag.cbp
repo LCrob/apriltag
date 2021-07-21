@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="apriltag"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\;CMake Files\CMake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="apriltag">
+				<Option output="/home/luigi/projects/apriltag/libapriltag.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 apriltag"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="apriltag/fast">
+				<Option output="/home/luigi/projects/apriltag/libapriltag.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 apriltag/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="opencv_demo">
+				<Option output="/home/luigi/projects/apriltag/opencv_demo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+					<Add directory="/usr/local/include/opencv4"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 opencv_demo"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="opencv_demo/fast">
+				<Option output="/home/luigi/projects/apriltag/opencv_demo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+					<Add directory="/usr/local/include/opencv4"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 opencv_demo/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="apriltag_python">
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 apriltag_python"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="apriltag_demo">
+				<Option output="/home/luigi/projects/apriltag/apriltag_demo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 apriltag_demo"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="apriltag_demo/fast">
+				<Option output="/home/luigi/projects/apriltag/apriltag_demo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/luigi/projects/apriltag"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/luigi/projects/apriltag/zmq_layer"/>
+					<Add directory="/home/luigi/projects/apriltag"/>
+					<Add directory="/apriltag"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 apriltag_demo/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/luigi/projects/apriltag/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/luigi/projects/apriltag/apriltag.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/apriltag.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/apriltag_pose.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/apriltag_pose.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/apriltag_quad_thresh.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/g2d.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/g2d.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/getopt.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/getopt.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/homography.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/homography.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8x3.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8x3.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8x4.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/image_u8x4.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/matd.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/matd.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pam.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pam.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pjpeg-idct.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pjpeg.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pjpeg.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pnm.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/pnm.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/string_util.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/string_util.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/svd22.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/svd22.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/time_util.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/time_util.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/unionfind.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/unionfind.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/workerpool.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/workerpool.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zarray.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zarray.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zhash.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zhash.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zmaxheap.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/common/zmaxheap.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/example/apriltag_demo.c">
+			<Option target="apriltag_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/example/opencv_demo.cc">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/json.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/markerPoseData.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/single_thread.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag16h5.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag16h5.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag25h9.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag25h9.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag36h11.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tag36h11.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCircle21h7.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCircle21h7.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCircle49h12.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCircle49h12.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCustom48h12.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagCustom48h12.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagStandard41h12.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagStandard41h12.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagStandard52h13.c">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/tagStandard52h13.h">
+			<Option target="apriltag"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/Publisher.cpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/Publisher.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/Subscriber.cpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/Subscriber.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/zhelpers.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/zmq_layer/zmq.hpp">
+			<Option target="opencv_demo"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/../../../../usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/../../../../usr/local/lib/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/luigi/projects/apriltag/CMake/apriltagConfig.cmake.in">
+			<Option virtualFolder="CMake Files\CMake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

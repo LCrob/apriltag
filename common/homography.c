@@ -344,6 +344,8 @@ matd_t *homography_to_pose(const matd_t *H, double fx, double fy, double cx, dou
         matd_destroy(R);
     }
 
+
+
     return matd_create_data(4, 4, (double[]) { R00, R01, R02, TX,
                                                R10, R11, R12, TY,
                                                R20, R21, R22, TZ,
