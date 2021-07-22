@@ -16,13 +16,13 @@ struct markerPoseData
     double roll;
     double pitch;
     double yaw;
-
+    int inView;
 
 
     void to_string(std::string& out)
     {
         std::stringstream out_stream;
-        out_stream << "MARKER " << x << ", " << y << "," << z << ", " << roll << ", " << pitch << ", " << yaw;
+        out_stream << "MARKER " << x << ", " << y << "," << z << ", " << roll << ", " << pitch << ", " << yaw <<" , inView " << inView;
         out = out_stream.str();
 
     }
@@ -35,6 +35,7 @@ struct markerPoseData
         j["roll"] = roll;
         j["pitch"] = pitch;
         j["yaw"] = yaw;
+        j["inView"] = inView;
 
     }
 
@@ -47,7 +48,7 @@ struct markerPoseData
             roll = j["roll"];
             pitch = j["pitch"] ;
             yaw = j["yaw"] ;
-
+            inView = j["inView"];
         } catch (std::exception &e) {
             return false;
         }

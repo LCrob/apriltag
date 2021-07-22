@@ -257,7 +257,7 @@ void solve_poly_approx(double* p, int degree, double* roots, int* n_roots) {
 /**
  * Given a local minima of the pose error tries to find the other minima.
  */
-matd_t* fix_pose_ambiguities(matd_t** v, matd_t** p, matd_t* t, matd_t* R, int n_points) {
+matd_t* fix_pose_ambiguities(matd_t** v, matd_t** p, matd_t* t, matd_t* R, int n_points, int* flag) {
     matd_t* I3 = matd_identity(3);
 
     // 1. Find R_t
@@ -439,6 +439,7 @@ matd_t* fix_pose_ambiguities(matd_t** v, matd_t** p, matd_t* t, matd_t* R, int n
     } else if (n_minima > 1)  {
         // This can happen if our prior pose estimate was not very good.
         fprintf(stderr, "Error, more than one new minimum found.\n");
+        *flag = true;
     }
     matd_destroy(I3);
     matd_destroy(M1);
@@ -494,7 +495,8 @@ void estimate_tag_pose_orthogonal_iteration(
         apriltag_pose_t* solution1,
         double* err2,
         apriltag_pose_t* solution2,
-        int nIters) {
+        int nIters,
+        int* flag) {
     double scale = info->tagsize/2.0;
     matd_t* p[4] = {
         matd_create_data(3, 1, (double[]) {-scale, scale, 0}),
@@ -509,7 +511,7 @@ void estimate_tag_pose_orthogonal_iteration(
 
     estimate_pose_for_tag_homography(info, solution1);
     *err1 = orthogonal_iteration(v, p, &solution1->t, &solution1->R, 4, nIters);
-    solution2->R = fix_pose_ambiguities(v, p, solution1->t, solution1->R, 4);
+    solution2->R = fix_pose_ambiguities(v, p, solution1->t, solution1->R, 4, flag);
     if (solution2->R) {
         solution2->t = matd_create(3, 1);
         *err2 = orthogonal_iteration(v, p, &solution2->t, &solution2->R, 4, nIters);
@@ -526,10 +528,10 @@ void estimate_tag_pose_orthogonal_iteration(
 /**
  * Estimate tag pose.
  */
-double estimate_tag_pose(apriltag_detection_info_t* info, apriltag_pose_t* pose) {
+double estimate_tag_pose(apriltag_detection_info_t* info, apriltag_pose_t* pose, int* flag) {
     double err1, err2;
     apriltag_pose_t pose1, pose2;
-    estimate_tag_pose_orthogonal_iteration(info, &err1, &pose1, &err2, &pose2, 50);
+    estimate_tag_pose_orthogonal_iteration(info, &err1, &pose1, &err2, &pose2, 50, flag);
     if (err1 <= err2) {
         pose->R = pose1.R;
         pose->t = pose1.t;

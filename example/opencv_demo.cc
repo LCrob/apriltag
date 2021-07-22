@@ -147,12 +147,12 @@ void fromQuaternionToRPY(float& roll,float& pitch,float& yaw,Eigen::Quaternion<f
 
 */
 
-bool checkInBoundaries(double p[][2])
+bool checkInBoundaries(apriltag_detection_t* det )
 {
     
     for(size_t i = 0 ; i < 4 ; i++)
     {
-        if(    ( p[i][1] > 20 && p[i][1] < 470 )        &&  ( p[i][0] >20  && p[i][0] < 630  )   )
+        if(    ( det->p[i][1] > 20 && det->p[i][1] < 470 )        &&  ( det->p[i][0] >20  && det->p[i][0] < 630  )   )
             continue;
         else
         {
@@ -160,6 +160,7 @@ bool checkInBoundaries(double p[][2])
         }
     }
     return true;
+
 };
 
 int main(int argc, char *argv[])
@@ -186,6 +187,7 @@ int main(int argc, char *argv[])
     }
 
     // Initialize camera
+    //VideoCapture cap(0);
     VideoCapture cap(0);
     if (!cap.isOpened()) {
         cerr << "Couldn't open video capture device" << endl;
@@ -234,6 +236,24 @@ int main(int argc, char *argv[])
     std::string out;
 
     Mat frame, gray;
+    
+    float x = 0 ;
+    float y =0 ;
+    float z  =0;
+    float roll=0; float pitch = 0; float yaw=0;
+    nlohmann::json j;
+    markerPoseData marker,pastMarker;
+    pastMarker.x = 0;
+    pastMarker.y = 0;
+    pastMarker.z = 0;
+    pastMarker.roll = 0;
+    pastMarker.pitch = 0;
+    pastMarker.yaw = 0;
+    pastMarker.to_json(j);
+
+    std::string  tmp_string ;
+    const char* out_cstring ;;
+    
     while (true) {
 
         cap >> frame;
@@ -254,11 +274,11 @@ int main(int argc, char *argv[])
         // Draw detection outlines            
         apriltag_pose_t pose;
 
-
-
+            
+        
+            
         for (int i = 0; i < zarray_size(detections); i++) {
 
-            Eigen::Quaternion<float> q;
 
             apriltag_detection_t *det;
 
@@ -271,8 +291,43 @@ int main(int argc, char *argv[])
             info.fy = 633.5834324;//687.37260599;//667.81;
             info.cx = 312.43271146;//264.12598696;//299.04; 
             info.cy = 229.88570203;//237.96954446;//250.50;
-            estimate_tag_pose( &info,  &pose);
-
+            int flag;
+            flag = 0;
+            double err = estimate_tag_pose( &info,  &pose, &flag);
+            
+            if(flag)
+            {
+                //j["id"] = det->id;
+                //pastMarker.x = x;
+                //pastMarker.y = y;
+               // pastMarker.z = z;
+                //pastMarker.roll = roll;
+               // pastMarker.pitch = pitch;
+               // pastMarker.yaw = yaw;
+                std::cout << "FLAG"<<std::endl;
+                marker.inView = 0;
+                marker.to_json(j);
+                tmp_string = j.dump();
+                out_cstring = tmp_string.c_str();
+                
+                aprilcodePublisher->send("MARKER", out_cstring, strlen(out_cstring) );
+                continue;
+            }
+            x = pose.t->data[0] ;
+            y = pose.t->data[1] ;
+            z = pose.t->data[2] ;
+            
+            Eigen::Matrix3f R;
+            R << pose.R->data[0] ,pose.R->data[1]  ,pose.R->data[2],
+                pose.R->data[3] ,pose.R->data[4] ,pose.R->data[5],
+                pose.R->data[6] ,pose.R->data[7], pose.R->data[8]; 
+            
+            fromRotationToRPYAngle(roll,pitch,yaw,R);
+            
+           
+            std::cout<< setprecision(4) << "x = " << x <<  "y = " << y << "z = " << z << std::endl;
+           
+            //std::cerr << err <<std::endl;
             //estimate_pose_for_tag_homography( &info,  &pose);
 
 
@@ -289,11 +344,11 @@ int main(int argc, char *argv[])
                      Point(det->p[3][0], det->p[3][1]),
                      Scalar(0xff, 0, 0), 2);
 
-            bool in_bound = checkInBoundaries(det->p);
+            /*bool in_bound = checkInBoundaries(det);
             if(!in_bound)
             {
                 continue;
-            }
+            }*/
             stringstream ss;
             ss << det->id;
             String text = ss.str();
@@ -306,60 +361,45 @@ int main(int argc, char *argv[])
                                        det->c[1]+textsize.height/2),
                                         fontface, fontscale, Scalar(0xff, 0x99, 0), 2);
 
-
-            //float yaw   = atan2(pose.R->data[3], pose.R->data[0]  );
-            //float pitch = atan2( -pose.R->data[6]  , sqrt( pow(pose.R->data[7],2) + pow(pose.R->data[8],2)) );
-            //float roll  = atan2(pose.R->data[7] , pose.R->data[8] );
-            float x = pose.t->data[0] ;
-            float y = pose.t->data[1] ;
-            float z = pose.t->data[2] ;
-            float roll,pitch,yaw;
-            //fromRotationToQuaternion(q, pose);
-            //fromQuaternionToRPY(roll, pitch, yaw,  q) ;
-            
-            Eigen::Matrix3f R;
-            R << pose.R->data[0] ,pose.R->data[1]  ,pose.R->data[2],
-                pose.R->data[3] ,pose.R->data[4] ,pose.R->data[5],
-                pose.R->data[6] ,pose.R->data[7], pose.R->data[8]; 
-            
-            fromRotationToRPYAngle(roll,pitch,yaw,R);
-            
-            //std::cout<< setprecision(4) << pose.R->data[0] << " "<< pose.R->data[1] << " "<< pose.R->data[2] << " "<< pose.R->data[3] << " "<< pose.R->data[4] << " " << std::endl;
-
-            //std::cout<< setprecision(4) << "roll = " << roll*180.0/3.14 <<  "pitch = " << pitch*180.0/3.14 << "yaw = " << yaw*180.0/3.14 << std::endl;
-            //std::cout<< setprecision(4) << "x = " << x <<  "y = " << y << "z = " << z << std::endl;
-            nlohmann::json j;
             j["id"] = det->id;
-
-            markerPoseData marker;
             marker.x = x;
             marker.y = y;
             marker.z = z;
             marker.roll = roll;
             marker.pitch = pitch;
             marker.yaw = yaw;
+            marker.inView = 1;
+
             marker.to_json(j);
-            std::string  tmp_string = j.dump();
-            const char* out_cstring = tmp_string.c_str();
-            
+            tmp_string = j.dump();
+            out_cstring = tmp_string.c_str();
             aprilcodePublisher->send("MARKER", out_cstring, strlen(out_cstring) );
-            if (ctrl_c_pressed){
+            
+            pastMarker.x = x;
+            pastMarker.y = y;
+            pastMarker.z = z;
+            pastMarker.roll = roll;
+            pastMarker.pitch = pitch;
+            pastMarker.yaw = yaw;
+            pastMarker.inView = 1;
+            pastMarker.to_json(j);
+
+
+        }
+
+        imshow("immagine" , frame);
+        waitKey(10);
+        apriltag_detections_destroy(detections);
+
+         if (ctrl_c_pressed){
 
                 std::cout << std::endl << "---------------------------------------------------------" << std::endl;
                 std::cout <<              "-                   STOP REQUESTED                      -";
                 std::cout << std::endl << "---------------------------------------------------------" << std::endl <<std::endl;
 
                 break;
-            }
-
-
         }
 
-        
-
-        imshow("immagine" , frame);
-        waitKey(10);
-        apriltag_detections_destroy(detections);
 
 
         //float yaw   = atan2(pose.R->data[1], pose.R->data[0]  );//  atan2(R(2,1),R(1,1));
